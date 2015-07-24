@@ -1,0 +1,220 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.cdji.weatherapp.MainActivity" 
+    android:background="#FFFFFFFF"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/linearlayout1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" 
+        android:layout_weight="2">
+
+        <EditText
+            android:id="@+id/city_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="4" />
+
+        <Button
+            android:id="@+id/search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/search" />
+    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+            <Button 
+                android:id="@+id/delete_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="35sp"
+                android:text="清空搜索历史"/>
+        </LinearLayout>
+    <TableLayout
+        android:id="@+id/tablegrid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7" >
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/beijing"
+                style="@style/textView"
+                android:text="@string/beijing" />
+
+            <TextView
+                android:id="@+id/tianjing"
+                style="@style/textView"
+                android:text="@string/tianjing" />
+
+            <TextView
+                android:id="@+id/shanghai"
+                style="@style/textView"
+                android:text="@string/shanghai" />
+
+            <TextView
+                android:id="@+id/congqing"
+                style="@style/textView"
+                android:text="@string/congqing" />
+          "
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/shengyang"
+                style="@style/textView"
+                android:text="@string/shengyang" />
+
+            <TextView
+                android:id="@+id/dalian"
+                style="@style/textView"
+                android:text="@string/dalian" />
+
+            <TextView
+                android:id="@+id/changcun"
+                style="@style/textView"
+                android:text="@string/changcun" />
+
+            <TextView
+                android:id="@+id/haerbin"
+                style="@style/textView"
+                android:text="@string/haerbin" />
+        </TableRow>
+
+        <TableRow android:layout_width="match_parent" >
+
+            <TextView
+                android:id="@+id/zhengzou"
+                style="@style/textView"
+                android:text="@string/zhengzou" />
+
+            <TextView
+                android:id="@+id/wuhan"
+                style="@style/textView"
+                android:text="@string/wuhan" />
+
+            <TextView
+                android:id="@+id/changsha"
+                style="@style/textView"
+                android:text="@string/changsha" />
+
+            <TextView
+                android:id="@+id/guangzou"
+                style="@style/textView"
+                android:text="@string/guangzou" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/hefei"
+                style="@style/textView"
+                android:text="@string/hefei" />
+
+            <TextView
+                android:id="@+id/shenzen"
+                style="@style/textView"
+                android:text="@string/shenzen" />
+
+            <TextView
+                android:id="@+id/nanjing"
+                style="@style/textView"
+                android:text="@string/nanjing" />
+
+            <TextView
+                android:id="@+id/xian"
+                style="@style/textView"
+                android:text="@string/xian" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/wuxi"
+                style="@style/textView"
+                android:text="@string/wuxi" />
+
+            <TextView
+                android:id="@+id/changzou"
+                style="@style/textView"
+                android:text="@string/changzou" />
+
+            <TextView
+                android:id="@+id/shuzou"
+                style="@style/textView"
+                android:text="@string/shuzou" />
+
+            <TextView
+                android:id="@+id/hangzou"
+                style="@style/textView"
+                android:text="@string/hangzou" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/ningbo"
+                style="@style/textView"
+                android:text="@string/ningbo" />
+
+            <TextView
+                android:id="@+id/jinan"
+                style="@style/textView"
+                android:text="@string/jinan" />
+
+            <TextView
+                android:id="@+id/qingdao"
+                style="@style/textView"
+                android:text="@string/qingdao" />
+
+            <TextView
+                android:id="@+id/fuzou"
+                style="@style/textView"
+                android:text="@string/fuzou" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/xiamen"
+                style="@style/textView"
+                android:text="@string/xiamen" />
+
+            <TextView
+                android:id="@+id/chengdu"
+                style="@style/textView"
+                android:text="@string/chengdu" />
+
+            <TextView
+                android:id="@+id/kunming"
+                style="@style/textView"
+                android:text="@string/kunming" />
+
+            <TextView
+                android:id="@+id/taian"
+                style="@style/textView"
+                android:text="@string/taian" />
+        </TableRow>
+    </TableLayout>
+
+    <Button 
+        android:id="@+id/speeh_btn"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="clip_vertical"
+        android:background="@drawable/ic_launcher"/>
+</LinearLayout>
