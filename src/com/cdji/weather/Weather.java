@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,23 +48,26 @@ public class Weather extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.activity_weathershow);
 		try {
-			cityname = this.getIntent().getExtras().getString("cityname");
+			cityname =getIntent().getExtras().getString("cityname");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			cityname = "Ê¯¼Ò×¯";
 			e.printStackTrace();
 		}
-		getWeatherinfo(cityname);
 
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_weathershow);
+		System.out.println(cityname);
+		getWeatherinfo(cityname);
 		init();
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
+		
 		
 		super.onResume();
 	}
@@ -83,6 +87,7 @@ public class Weather extends Activity {
 				Intent intent=new Intent();
 				intent.setClass(Weather.this, Setting.class);
 				startActivity(intent);
+				finish();
 			}
 		});
 		pageguider=new Pageguider(this);
@@ -124,7 +129,7 @@ public class Weather extends Activity {
 		DataBaseHelper dbhelper = new DataBaseHelper(this);
 		SQLiteDatabase searchdb = dbhelper.getReadableDatabase();
 		Cursor cursor = searchdb.rawQuery(
-				"select * from seachedcity where subscribe=? and cityname!=?",
+				"select * from seachedcity where isrecode=? and cityname!=?",
 				new String[] { "1", cityname });
 		while (cursor.moveToNext()) {
 			View layout = inflater.inflate(R.layout.viewpageritem, null);
@@ -162,13 +167,10 @@ public class Weather extends Activity {
 		DataBaseHelper dbhelper = new DataBaseHelper(this);
 		SQLiteDatabase searchdb = dbhelper.getReadableDatabase();
 		Cursor cursor = searchdb.rawQuery(
-				"select * from seachedcity where cityname=?",
-				new String[] { weatherInfo.getCityname() });
+				"select * from seachedcity where cityname=? and isrecode=?",
+				new String[] { weatherInfo.getCityname(),"1"});
 		if (!cursor.moveToFirst()) {
-			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,isrecode,isalarm) values(\""
-					+ weatherInfo.getId_city()
-					+ "\",\""
-					+ weatherInfo.getCityname() + "\",\"1\",\"1\");");
+			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,isrecode) values(?,?,?);",new String[]{weatherInfo.getId_city(),weatherInfo.getCityname(),"1"});
 		}
 		cursor.close();
 		searchdb.close();

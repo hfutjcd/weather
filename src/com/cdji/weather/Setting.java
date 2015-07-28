@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -38,11 +39,21 @@ public class Setting extends AppCompatActivity {
 		setContentView(R.layout.activity_setting);
 		initComponet();
 	}
+	
+	
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		initlistview();
+		super.onResume();
+	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_main, menu);
+		getMenuInflater().inflate(R.menu.menu_setting, menu);
 		return true;
 	}
 
@@ -50,15 +61,16 @@ public class Setting extends AppCompatActivity {
 		toolbar = (Toolbar) findViewById(R.id.toolbar);
 		listView = (ListView) findViewById(R.id.subscribelist);
 
-		toolbar.setTitle("收货地址");
+		toolbar.setTitle("设置");
 		setSupportActionBar(toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		initlistview();
 	}
 
 	private void initlistview() {
 		// TODO Auto-generated method stub
-		list = new ArrayList<WeatherInfo>();
+		if(list==null){
+		list = new ArrayList<WeatherInfo>();}
+		list.clear();
 		DataBaseHelper dbhelper = new DataBaseHelper(this);
 		SQLiteDatabase searchdb = dbhelper.getReadableDatabase();
 		Cursor cursor = searchdb.rawQuery(
@@ -88,7 +100,7 @@ public class Setting extends AppCompatActivity {
 				TextView textView = (TextView) view
 						.findViewById(R.id.itemcityname);
 				textView.setText(item.getCityname());
-				textView.setOnClickListener(new ItemClickedListener(context,
+				textView.setOnLongClickListener(new ItemClickedListener(context,
 						item, position));
 				return view;
 			}
@@ -104,17 +116,16 @@ public class Setting extends AppCompatActivity {
 		{
 			finish();
 		}
-		if(item.getItemId()==R.id.action_settings)
+		if(item.getItemId()==R.id.action_adding)
 		{
 			Intent intent=new Intent();
-			intent.setClass(this, SelectAddedCiyt.class);
+			intent.setClass(this, AddcityList.class);
 			startActivity(intent);
 		}
 		
 		return super.onOptionsItemSelected(item);
 	}
-
-	public class ItemClickedListener implements OnClickListener {
+	public class ItemClickedListener implements OnLongClickListener {
 		private WeatherInfo weatherInfo;
 		private int position;
 		private Context context;
@@ -129,7 +140,7 @@ public class Setting extends AppCompatActivity {
 		}
 
 		@Override
-		public void onClick(View v) {
+		public boolean onLongClick(View v) {
 			// TODO Auto-generated method stub
 			dialog = new Dialog(context);
 			View view = LayoutInflater.from(context).inflate(
@@ -149,6 +160,9 @@ public class Setting extends AppCompatActivity {
 					searchdb.execSQL(
 							"delete from seachedcity where cityname=? and subscribe=?",
 							new String[] {string,issubscribe});
+					searchdb.execSQL(
+							"delete from seachedcity where cityname=? and isalarm=?",
+							new String[] {string,"1"});
 					searchdb.close();
 					System.out.println(string+"  "+issubscribe);
 					dialog.dismiss();
@@ -174,7 +188,8 @@ public class Setting extends AppCompatActivity {
 			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			dialog.setContentView(view);
 			dialog.show();
-
+			
+			return false;
 		}
 
 	}

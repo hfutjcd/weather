@@ -12,10 +12,13 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -39,11 +42,12 @@ import com.iflytek.cloud.SpeechUtility;
 import com.iflytek.cloud.UnderstanderResult;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 	private EditText city_text;
 	private Button search_btn;
 	private Button delete_btn;
 	private Button speeh_btn;
+	private Toolbar toolbar;
 	private static String TAG = MainActivity.class.getSimpleName();
 	// 语义理解对象（语音到语义）。
 	private SpeechUnderstander mSpeechUnderstander;
@@ -55,8 +59,6 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		init();
 		hasSearcedhistory();
@@ -171,10 +173,56 @@ public class MainActivity extends Activity {
 		
 		if (time!=0) {
 			System.out.println(time);
+		
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isrecode) values(\"1\",\"合肥\","+time+",\"1\");");
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,subscribe) values(\"1\",\"合肥\","+time+",\"1\");");
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isrecode) values(\"1\",\"北京\","+time+",\"1\");");
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,subscribe) values(\"1\",\"北京\","+time+",\"1\");");
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isrecode) values(\"1\",\"上海\","+time+",\"1\");");
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,subscribe) values(\"1\",\"上海\","+time+",\"1\");");
 //			
-//		searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isrecode,isalarm,subscribe) values(\"1\",\"合肥\","+time+",\"1\",\"1\",\"1\");");
-//		searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isrecode,isalarm,subscribe) values(\"2\",\"北京\",\""+time+"\",\"1\",\"1\",\"1\");");
-//		searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isrecode,isalarm,subscribe) values(\"3\",\"上海\","+time+",\"1\",\"1\",\"1\");");		
+//			
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isalarm) values(\"1\",\"合肥\","+time+",\"1\");");
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isalarm) values(\"1\",\"北京\","+time+",\"1\");");
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isalarm) values(\"1\",\"上海\","+time+",\"1\");");
+//			
+//			try {
+//				time=sFormat.parse("2015-7-28 11:22").getTime();
+//			} catch (ParseException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isalarm) values(\"1\",\"合肥\","+time+",\"1\");");
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isalarm) values(\"1\",\"北京\","+time+",\"1\");");
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isalarm) values(\"1\",\"上海\","+time+",\"1\");");
+//			
+//			
+//			try {
+//				time=sFormat.parse("2015-7-29 12:32").getTime();
+//			} catch (ParseException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isalarm) values(\"1\",\"北京\","+time+",\"1\");");
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isalarm) values(\"1\",\"上海\","+time+",\"1\");");
+//				
+//			
+//			
+//			try {
+//				time=sFormat.parse("2015-7-30 10:22").getTime();
+//			} catch (ParseException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isalarm) values(\"2\",\"上海\","+time+",\"1\");");
+//			
+//			try {
+//				time=sFormat.parse("2015-7-31 13:22").getTime();
+//			} catch (ParseException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			searchdb.execSQL("insert into seachedcity (id_citiy,cityname,date,isalarm) values(\"3\",\"上海\","+time+",\"1\");");		
 		}
 		System.out.println("添加模拟天气成功");
 		
@@ -182,7 +230,7 @@ public class MainActivity extends Activity {
 		///////////////
 		
 		Cursor cursor = searchdb.rawQuery(
-				"select * from seachedcity where subscribe=?;",
+				"select * from seachedcity where isrecode=?;",
 				new String[]{"1"});
 		
 		if (cursor.moveToFirst()) {
@@ -254,6 +302,11 @@ public class MainActivity extends Activity {
 		search_btn = (Button) findViewById(R.id.search);
 		delete_btn = (Button) findViewById(R.id.delete_btn);
 		speeh_btn = (Button) findViewById(R.id.speeh_btn);
+		toolbar=(Toolbar) findViewById(R.id.maintoolbar);
+		
+		toolbar.setTitle("选择查询城市");
+		setSupportActionBar(toolbar);
+		
 
 		search_btn.setOnClickListener(new OnClickListener() {
 			@Override
@@ -271,7 +324,6 @@ public class MainActivity extends Activity {
 				DataBaseHelper dbhelper = new DataBaseHelper(MainActivity.this);
 				SQLiteDatabase searchdb = dbhelper.getReadableDatabase();
 				searchdb.execSQL("delete from seachedcity where isrecode=\"1\";");
-				searchdb.execSQL("delete from seachedcity where isalarm=\"1\";");
 				// searchdb.delete("seachedcity", "isrecode", new
 				// String[]{"1"});
 				// searchdb.execSQL("delete from seachedcity; select * from seachedcity;update seachedcity set seq=0 where name=seachedcity; ");
@@ -345,18 +397,6 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
 	public class TableListener implements OnClickListener {
 		// private EditText editText;
 		@Override
@@ -374,6 +414,10 @@ public class MainActivity extends Activity {
 		intent.putExtras(bundle);
 		intent.setClass(this, Weather.class);
 		startActivity(intent);
+	}
+	public static Resources getResource()
+	{
+		return getResource();
 	}
 
 }

@@ -2,19 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.cdji.weatherapp.MainActivity" 
     android:background="#FFFFFFFF"
     android:orientation="vertical">
+
+    <include
+        android:id="@+id/maintoolbar"
+        layout="@layout/toolbar" />
 
     <LinearLayout
         android:id="@+id/linearlayout1"
         android:layout_width="match_parent"
-        android:layout_height="0dp" 
-        android:layout_weight="2">
+        android:layout_height="0dp"
+        android:layout_weight="2" >
 
         <EditText
             android:id="@+id/city_text"
@@ -29,16 +28,19 @@
             android:layout_weight="1"
             android:text="@string/search" />
     </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-            <Button 
-                android:id="@+id/delete_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="35sp"
-                android:text="清空搜索历史"/>
-        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/delete_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="清空搜索历史"
+            android:textSize="35sp" />
+    </LinearLayout>
+
     <TableLayout
         android:id="@+id/tablegrid"
         android:layout_width="match_parent"
@@ -68,7 +70,6 @@
                 android:id="@+id/congqing"
                 style="@style/textView"
                 android:text="@string/congqing" />
-          "
         </TableRow>
 
         <TableRow>
@@ -210,11 +211,12 @@
         </TableRow>
     </TableLayout>
 
-    <Button 
+    <Button
         android:id="@+id/speeh_btn"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:gravity="clip_vertical"
-        android:background="@drawable/ic_launcher"/>
+        android:background="@drawable/ic_launcher"
+        android:gravity="clip_vertical" />
+
 </LinearLayout>
