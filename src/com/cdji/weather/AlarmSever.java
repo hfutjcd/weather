@@ -6,10 +6,13 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import com.cdji.weathertool.DataBaseHelper;
 import com.cdji.weathertool.Nettool;
 import com.cdji.weathertool.WeatherInfo;
 
@@ -47,8 +50,9 @@ public void shownotification(WeatherInfo wInfo){
         .build();
 		noti.flags = Notification.FLAG_AUTO_CANCEL;
 		mm.notify(0, noti);
-
+		
 }	
+	
 
 public class GetWeatherinfo extends AsyncTask<String, String, WeatherInfo> {
 

@@ -39,16 +39,13 @@ public class Setting extends AppCompatActivity {
 		setContentView(R.layout.activity_setting);
 		initComponet();
 	}
-	
-	
-	
+
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		initlistview();
 		super.onResume();
 	}
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -68,8 +65,9 @@ public class Setting extends AppCompatActivity {
 
 	private void initlistview() {
 		// TODO Auto-generated method stub
-		if(list==null){
-		list = new ArrayList<WeatherInfo>();}
+		if (list == null) {
+			list = new ArrayList<WeatherInfo>();
+		}
 		list.clear();
 		DataBaseHelper dbhelper = new DataBaseHelper(this);
 		SQLiteDatabase searchdb = dbhelper.getReadableDatabase();
@@ -77,6 +75,24 @@ public class Setting extends AppCompatActivity {
 				"select * from seachedcity where subscribe=?",
 				new String[] { "1" });
 		while (cursor.moveToNext()) {
+			//检测是否所有闹钟已过期
+			Cursor cursor2 = searchdb
+					.rawQuery(
+							"select * from seachedcity where cityname=? and isalarm=? order by date desc",
+							new String[] { cursor.getString(2), "1" });//按降序排列，使最晚的闹钟在第一行
+			if (cursor2.moveToNext()) {
+				long date = Long.valueOf(cursor2.getString(3));  
+				if (date < System.currentTimeMillis()) {
+					//所有闹钟已过期，删除所有闹钟，删除所有订阅。
+					searchdb.execSQL("delete from seachedcity where cityname=? and subscribe=? ;",new String []{cursor2.getString(2),"1"});
+					searchdb.execSQL("delete from seachedcity where cityname=? and isalarm=? ;",new String []{cursor2.getString(2),"1"});
+					cursor2.close();
+					continue;
+				}
+				cursor2.close();
+				
+			}
+
 			WeatherInfo wInfo = new WeatherInfo();
 			wInfo.setCityname(cursor.getString(2));
 			wInfo.setIsalarm(cursor.getString(11));
@@ -100,37 +116,36 @@ public class Setting extends AppCompatActivity {
 				TextView textView = (TextView) view
 						.findViewById(R.id.itemcityname);
 				textView.setText(item.getCityname());
-				textView.setOnLongClickListener(new ItemClickedListener(context,
-						item, position));
+				textView.setOnLongClickListener(new ItemClickedListener(
+						context, item, position));
 				return view;
 			}
 
 		};
-		
+
 		listView.setAdapter(citylistAdapter);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if(item.getItemId()==android.R.id.home)
-		{
+		if (item.getItemId() == android.R.id.home) {
 			finish();
 		}
-		if(item.getItemId()==R.id.action_adding)
-		{
-			Intent intent=new Intent();
+		if (item.getItemId() == R.id.action_adding) {
+			Intent intent = new Intent();
 			intent.setClass(this, AddcityList.class);
 			startActivity(intent);
 		}
-		
+
 		return super.onOptionsItemSelected(item);
 	}
+
 	public class ItemClickedListener implements OnLongClickListener {
 		private WeatherInfo weatherInfo;
 		private int position;
 		private Context context;
 		private Dialog dialog;
-		private TextView deletebtn,settingalarmbtn;
+		private TextView deletebtn, settingalarmbtn;
 
 		public ItemClickedListener(Context context, WeatherInfo weatherInfo,
 				int position) {
@@ -145,39 +160,39 @@ public class Setting extends AppCompatActivity {
 			dialog = new Dialog(context);
 			View view = LayoutInflater.from(context).inflate(
 					R.layout.settingdialog, null);
-			deletebtn=(TextView) view.findViewById(R.id.delete_btn);
-			settingalarmbtn=(TextView) view.findViewById(R.id.settingalarm_btn);
+			deletebtn = (TextView) view.findViewById(R.id.delete_btn);
+			settingalarmbtn = (TextView) view
+					.findViewById(R.id.settingalarm_btn);
 			deletebtn.setOnClickListener(new OnClickListener() {
-					
-				
+
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					String string=weatherInfo.getCityname();
-					String issubscribe=weatherInfo.getIssubscribe();
+					String string = weatherInfo.getCityname();
+					String issubscribe = weatherInfo.getIssubscribe();
 					DataBaseHelper dbhelper = new DataBaseHelper(context);
 					SQLiteDatabase searchdb = dbhelper.getReadableDatabase();
 					searchdb.execSQL(
 							"delete from seachedcity where cityname=? and subscribe=?",
-							new String[] {string,issubscribe});
+							new String[] { string, issubscribe });
 					searchdb.execSQL(
 							"delete from seachedcity where cityname=? and isalarm=?",
-							new String[] {string,"1"});
+							new String[] { string, "1" });
 					searchdb.close();
-					System.out.println(string+"  "+issubscribe);
+					System.out.println(string + "  " + issubscribe);
 					dialog.dismiss();
 					list.remove(position);
 					Setting.this.citylistAdapter.notifyDataSetInvalidated();
 				}
 			});
-			
+
 			settingalarmbtn.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					Intent intent=new Intent();
-					Bundle bundle=new Bundle();
+					Intent intent = new Intent();
+					Bundle bundle = new Bundle();
 					bundle.putString("cityname", weatherInfo.getCityname());
 					intent.putExtras(bundle);
 					intent.setClass(Setting.this, AlarmSet.class);
@@ -188,7 +203,7 @@ public class Setting extends AppCompatActivity {
 			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			dialog.setContentView(view);
 			dialog.show();
-			
+
 			return false;
 		}
 

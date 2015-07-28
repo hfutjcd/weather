@@ -240,14 +240,32 @@ public class NewAlarm extends AppCompatActivity {
 		bundle.putSerializable("WeatherInfo", wInfo2);
 		System.out.println("registeralarm"+wInfo2.getCityname() +wInfo2.getDate()+wInfo2.getPubdate());
 		intent.putExtras(bundle);
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,
+		
+		DataBaseHelper dbhelper = new DataBaseHelper(this);
+		SQLiteDatabase searchdb = dbhelper.getReadableDatabase();
+		Cursor cursor = searchdb.rawQuery(
+				"select * from seachedcity where cityname=? and date=? and isalarm=? order by date asc;",
+				new String[] {wInfo2.getCityname(),time+"","1" });
+		if (cursor.moveToNext()) {
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, cursor.getInt(0),
 				intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		AlarmManager aManager;
 		aManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 		aManager.set(AlarmManager.RTC_WAKEUP, time,
 				pendingIntent);
 		Log.i("TAG", "注册了一个闹钟事件" + wInfo2.getCityname() + wInfo2.getDate()
-				+ wInfo2.getPubdate());
+				+ wInfo2.getPubdate());	
+			
+		}
+		else{
+			Log.i("TAG","没有存入数据库，注册失败！");
+		}
+		
+		
+		
+		
+		
+		
 //		sendBroadcast(intent);
 	}
 
