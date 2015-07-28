@@ -2,6 +2,7 @@ package com.cdji.weather;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import com.cdji.weathertool.Calendarhelp;
@@ -10,8 +11,10 @@ import com.cdji.weathertool.WeatherInfo;
 import com.iflytek.cloud.InitListener;
 import android.R.integer;
 import android.app.AlarmManager;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -61,84 +64,8 @@ public class NewAlarm extends AppCompatActivity {
 		toolbar.setTitle("新建提醒");
 		setSupportActionBar(toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-		dateView.setOnClickListener(new OnClickListener() {
-			private Dialog dialog;
-			private DatePicker datePicker;
-			private Button button;
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				dialog = new Dialog(NewAlarm.this);
-				View view = LayoutInflater.from(NewAlarm.this).inflate(
-						R.layout.datedialog, null);
-				datePicker = (DatePicker) view.findViewById(R.id.datePicker1);
-				button = (Button) view.findViewById(R.id.date_ok);
-				button.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						String string = datePicker.getYear() + "-"
-								+ (datePicker.getMonth() + 1) + "-"
-								+ datePicker.getDayOfMonth();
-						String str = Calendarhelp.formatDateTime(string);
-						dateView.setText(str);
-						dateView.setTag(string);
-						dialog.dismiss();
-					}
-
-				});
-
-				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-				dialog.setContentView(view);
-				dialog.show();
-
-			}
-		});
-
-		timeView.setOnClickListener(new OnClickListener() {
-			private Dialog dialog;
-			private TimePicker timePicker;
-			private Button button;
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				dialog = new Dialog(NewAlarm.this);
-				View view = LayoutInflater.from(NewAlarm.this).inflate(
-						R.layout.timedialog, null);
-				timePicker = (TimePicker) view.findViewById(R.id.timePicker1);
-				button = (Button) view.findViewById(R.id.time_ok);
-				button.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						// String
-						// string=timePicker.get()+"-"+(datePicker.getMonth()+1)+"-"+datePicker.getDayOfMonth();
-						String string;
-						if (timePicker.getCurrentMinute() < 10) {
-							string = timePicker.getCurrentHour() + ":0"
-									+ timePicker.getCurrentMinute();
-						} else {
-							string = timePicker.getCurrentHour() + ":"
-									+ timePicker.getCurrentMinute();
-						}
-
-						timeView.setText(string);
-						timeView.setTag(string);
-						dialog.dismiss();
-					}
-				});
-
-				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-				dialog.setContentView(view);
-				dialog.show();
-
-			}
-		});
+		dateView.setOnClickListener(datepicklistener);
+		timeView.setOnClickListener(timePickerlistener);
 
 	}
 
@@ -232,41 +159,100 @@ public class NewAlarm extends AppCompatActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	private OnClickListener timePickerlistener = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			Calendar calendar = Calendar.getInstance();
+			TimePickerDialog timePicker = new TimePickerDialog(NewAlarm.this,
+					timeSetListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
+			timePicker.setTitle("请选择时间:");
+			timePicker.setMessage("选择适合您的时间");
+			timePicker.setIcon(R.drawable.ic_launcher);
+			timePicker.show();
+		}
+
+	};
+	private TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
+
+		@Override
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+			// TODO Auto-generated method stub
+			String string;
+			if (view.getCurrentMinute() < 10) {
+				string = view.getCurrentHour() + ":0" + view.getCurrentMinute();
+			} else {
+				string = view.getCurrentHour() + ":" + view.getCurrentMinute();
+			}
+
+			timeView.setText(string);
+			timeView.setTag(string);
+		}
+	};
+
+	private OnClickListener datepicklistener = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			Calendar calendar = Calendar.getInstance();
+			DatePickerDialog datePickerDialog = new DatePickerDialog(
+					NewAlarm.this, dateSetListener, calendar.get(Calendar.YEAR),
+					calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+			datePickerDialog.setTitle("选择日期");
+			datePickerDialog.setMessage("请选择合适的日期");
+			datePickerDialog.setIcon(R.drawable.ic_launcher);
+			datePickerDialog.setCancelable(false);
+			datePickerDialog.show();
+		}
+	};
+
+	private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+
+		@Override
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
+			// TODO Auto-generated method stub
+			String string = view.getYear() + "-" + (view.getMonth() + 1) + "-"
+					+ view.getDayOfMonth();
+			String str = Calendarhelp.formatDateTime(string);
+			dateView.setText(str);
+			dateView.setTag(string);
+		}
+	};
+
+	//注册闹钟时间
 	private void registeralarm(WeatherInfo wInfo2, long time) {
 		// TODO Auto-generated method stub
 		Intent intent = new Intent("com.cdji.MY_ALARM");
-//		intent.setClass(NewAlarm.this, AlarmSever.class);
+		// intent.setClass(NewAlarm.this, AlarmSever.class);
 		Bundle bundle = new Bundle();
 		bundle.putSerializable("WeatherInfo", wInfo2);
-		System.out.println("registeralarm"+wInfo2.getCityname() +wInfo2.getDate()+wInfo2.getPubdate());
+		System.out.println("registeralarm" + wInfo2.getCityname()
+				+ wInfo2.getDate() + wInfo2.getPubdate());
 		intent.putExtras(bundle);
 		
+		//使用闹钟在数据表中的唯一ID作为pendingIntent的ID，避免pendingIntent更新	
 		DataBaseHelper dbhelper = new DataBaseHelper(this);
 		SQLiteDatabase searchdb = dbhelper.getReadableDatabase();
-		Cursor cursor = searchdb.rawQuery(
-				"select * from seachedcity where cityname=? and date=? and isalarm=? order by date asc;",
-				new String[] {wInfo2.getCityname(),time+"","1" });
+		Cursor cursor = searchdb
+				.rawQuery(
+						"select * from seachedcity where cityname=? and date=? and isalarm=? order by date asc;",
+						new String[] { wInfo2.getCityname(), time + "", "1" });
 		if (cursor.moveToNext()) {
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, cursor.getInt(0),
-				intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		AlarmManager aManager;
-		aManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-		aManager.set(AlarmManager.RTC_WAKEUP, time,
-				pendingIntent);
-		Log.i("TAG", "注册了一个闹钟事件" + wInfo2.getCityname() + wInfo2.getDate()
-				+ wInfo2.getPubdate());	
-			
+			PendingIntent pendingIntent = PendingIntent
+					.getBroadcast(this, cursor.getInt(0), intent,
+							PendingIntent.FLAG_UPDATE_CURRENT);
+			AlarmManager aManager;
+			aManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+			aManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+			Log.i("TAG", "注册了一个闹钟事件 " + wInfo2.getCityname() +" "+ wInfo2.getDate()
+					+ wInfo2.getPubdate());
+
+		} else {
+			Log.i("TAG", "没有存入数据库，注册失败！");
 		}
-		else{
-			Log.i("TAG","没有存入数据库，注册失败！");
-		}
-		
-		
-		
-		
-		
-		
-//		sendBroadcast(intent);
 	}
 
 }
