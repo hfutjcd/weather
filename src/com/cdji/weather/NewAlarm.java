@@ -3,37 +3,32 @@ package com.cdji.weather;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
-import com.cdji.weathertool.Calendarhelp;
-import com.cdji.weathertool.DataBaseHelper;
-import com.cdji.weathertool.WeatherInfo;
-import com.iflytek.cloud.InitListener;
-import android.R.integer;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.cdji.weathertool.Calendarhelp;
+import com.cdji.weathertool.DataBaseHelper;
+import com.cdji.weathertool.WeatherInfo;
 
 public class NewAlarm extends AppCompatActivity {
 	private Toolbar toolbar;
@@ -232,6 +227,15 @@ public class NewAlarm extends AppCompatActivity {
 		System.out.println("registeralarm" + wInfo2.getCityname()
 				+ wInfo2.getDate() + wInfo2.getPubdate());
 		intent.putExtras(bundle);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+
+		// 3.1以后的版本直接设置Intent.FLAG_INCLUDE_STOPPED_PACKAGES的value：32
+
+		if (android.os.Build.VERSION.SDK_INT >= 12) {
+
+		    intent.setFlags(32);
+
+		}
 		
 		//使用闹钟在数据表中的唯一ID作为pendingIntent的ID，避免pendingIntent更新	
 		DataBaseHelper dbhelper = new DataBaseHelper(this);
@@ -244,12 +248,17 @@ public class NewAlarm extends AppCompatActivity {
 			PendingIntent pendingIntent = PendingIntent
 					.getBroadcast(this, cursor.getInt(0), intent,
 							PendingIntent.FLAG_UPDATE_CURRENT);
+			
+			
 			AlarmManager aManager;
 			aManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+			long time2=time-System.currentTimeMillis();
 			aManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+			
+//			aManager.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime()+time2, pendingIntent);
 			Log.i("TAG", "注册了一个闹钟事件 " + wInfo2.getCityname() +" "+ wInfo2.getDate()
 					+ wInfo2.getPubdate());
-
+  
 		} else {
 			Log.i("TAG", "没有存入数据库，注册失败！");
 		}

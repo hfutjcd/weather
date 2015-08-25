@@ -385,7 +385,7 @@ public class MainActivity extends AppCompatActivity {
 		textview_list.add((TextView) findViewById(R.id.kunming));
 		textview_list.add((TextView) findViewById(R.id.taian));
 		TableListener hclistener = new TableListener();
-		for (int i = 0; i < textview_list.size() - 1; i++) {
+		for (int i = 0; i < textview_list.size(); i++) {
 			textview_list.get(i).setOnClickListener(hclistener);
 		}
 	}

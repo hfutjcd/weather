@@ -12,7 +12,6 @@ import java.net.URLEncoder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class Nettool {
 //	private static String httpUrl="http://apis.baidu.com/apistore/weatherservice/weather?citypinyin=beijing";//"http://api.baidu.com/apistore/weatherservice/weather";
 	private static String httpUrl="http://apis.baidu.com/apistore/weatherservice/cityname";
